@@ -9,6 +9,7 @@ use App\Jobs\SendExportEmailJob;
 use App\Jobs\StoreExportDataJob;
 use App\Mail\ExportEmail;
 use App\Models\Export;
+use App\Models\Meal;
 use App\Services\PunkapiService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -19,29 +20,28 @@ class BeerController extends Controller
 {
     public function index(BeerRequest $request, PunkapiService $service)
     {
-        $beers = $service->getBeers(...$request->validated());
+        $filters = $request->validated();
+        $beers = $service->getBeers(...$filters);
+        $meals = Meal::all();
 
-        return Inertia::render('Beers', ['beers' => $beers]);
+        return Inertia::render('Beers', [
+            'beers' => $beers,
+            'meals' => $meals,
+            'filters' => $filters
+        ]);
     }
 
-    public function export(BeerRequest $request)
+    public function export(BeerRequest $request, PunkapiService $service)
     {
-        $filename = 'cervejas-encontradas-' . now()->format('Y-m-d - H_i') . '.xlsx';
+        $filename = "cervejas-encontradas-" . now()->format('Y-m-d - H_i') . ".xlsx";
 
-        try {
+        ExportJob::withChain([
+            new SendExportEmailJob($filename),
+            new StoreExportDataJob(auth()->user(), $filename)
+        ])->dispatch($request->validated(), $filename);
 
-            ExportJob::withChain([
-                new SendExportEmailJob($filename),
-                new StoreExportDataJob(auth()->user(), $filename),
-            ])->dispatch($request->validated(), $filename);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Erro ao exportar dados'
-            ], 500);
-        }
-
-        return 'relatorio criado';
+        return redirect()->back()
+            ->with('success', 'Seu arquivo foi enviado para processamento e em breve estará em seu email');
     }
 
 
