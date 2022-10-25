@@ -32,11 +32,17 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
-Route::group(['prefix' => 'beers', 'middleware' => 'auth'], function () {
-    Route::get('/', [BeerController::class, 'index'])->name('beers.index');
-    Route::get('/export', [BeerController::class, 'export'])->name('beers.export');
-    Route::resource('reports', ExportController::class)
-        ->only(['index', 'destroy']);
+Route::group([
+    'prefix' => 'beers',
+    'middleware' => 'auth'
+], function() {
+    Route::get('/', [BeerController::class, 'index'])->name('beers');
+
+    Route::post('/export', [BeerController::class, 'export'])->name('beers.export');
+
+    Route::resource("reports", ExportController::class)
+        ->only(["index", "show", "destroy"]);
 });
+
 
 
