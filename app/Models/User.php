@@ -42,8 +42,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function exports()
-    {
+    public function exports() {
         return $this->hasMany(Export::class);
     }
 }

@@ -7,11 +7,9 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class BeerExport implements FromCollection, WithHeadings
 {
-
-    public function __construct(private array $reportData)
-    {
-
-    }
+    public function __construct(
+        private array $reportData
+    ){}
 
     /**
     * @return \Illuminate\Support\Collection
