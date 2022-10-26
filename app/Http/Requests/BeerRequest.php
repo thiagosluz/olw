@@ -24,10 +24,10 @@ class BeerRequest extends FormRequest
     public function rules()
     {
         return [
-            'beer_name' => 'string|nullable',
-            'food' => 'string|nullable',
-            'malt' => 'string|nullable',
-            'ibu_gt' => 'integer|nullable',
+            'beer_name' => 'nullable|string',
+            'malt' => 'nullable|string',
+            'food' => 'nullable|string',
+            'ibu_gt' => 'nullable|integer'
         ];
     }
 }

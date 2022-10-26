@@ -46,7 +46,7 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'success' =>session()->has('success'),
                 'message' => session('success')
-            ],
+            ]
         ]);
     }
 }

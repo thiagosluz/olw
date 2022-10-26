@@ -21,11 +21,13 @@ class StoreExportDataJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(protected Authenticatable $user, protected string $filename)
+    public function __construct(
+        protected Authenticatable $user,
+        protected String $filename
+    )
     {
         //
     }
-
 
     /**
      * Execute the job.
@@ -35,7 +37,7 @@ class StoreExportDataJob implements ShouldQueue
     public function handle()
     {
         $this->user->exports()->create([
-            'file_name' => $this->filename
+            "file_name" => $this->filename
         ]);
     }
 }
